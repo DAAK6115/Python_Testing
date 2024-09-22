@@ -6,10 +6,14 @@
 </head>
 <body>
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
-    Please enter your secretary email to continue:
+    
+    <!-- Lien vers le tableau des points -->
+    <p><a href="/points">View Club Points</a></p>
+
+    <p>Please enter your secretary email to continue:</p>
     <form action="showSummary" method="post">
         <label for="email">Email:</label>
-        <input type="email" name="email" id=""/>
+        <input type="email" name="email" id="" required/>
         <button type="submit">Enter</button>
     </form>
 </body>
