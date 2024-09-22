@@ -80,6 +80,13 @@ def purchasePlaces():
 def show_points():
     return render_template('points.html', clubs=clubs)
 
+
+@app.route('/points-public')
+def points_public():
+    # Nous passons la liste des clubs à la page HTML
+    return render_template('points_public.html', clubs=clubs)
+
+
 # TODO: Add route for points display
 
 @app.route('/logout')

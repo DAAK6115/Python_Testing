@@ -8,14 +8,18 @@
     <!-- Affichage du nom du club au lieu de l'email -->
     <h2>Welcome, {{club['name']}} </h2><a href="{{url_for('logout')}}">Logout</a>
 
-    {% with messages = get_flashed_messages()%}
+    <!-- Ajout du lien pour voir le tableau public des points des clubs -->
+    <p><a href="{{ url_for('points_public') }}">Voir les points des clubs</a></p>
+
+    {% with messages = get_flashed_messages() %}
     {% if messages %}
         <ul>
        {% for message in messages %}
             <li>{{message}}</li>
         {% endfor %}
        </ul>
-    {% endif%}
+    {% endif %}
+    
     Points available: {{club['points']}}
     <h3>Competitions:</h3>
     <ul>
