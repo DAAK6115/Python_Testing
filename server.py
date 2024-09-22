@@ -54,16 +54,17 @@ def purchasePlaces():
 
     if competition and club:
         if places_required > 12:
-            flash('Erreur: Tu ne peux pas reserver plus de 12 places par compétition.')
+            flash('Error: You cannot reserve more than 12 places per competition.')
         elif competition['numberOfPlaces'] < places_required:
-            flash('Erreur: Pas assez de places disponible pour cette compétition.')
+            flash('Error: Not enough places available for this competition.')
         else:
             competition['numberOfPlaces'] -= places_required
             flash('Great-booking complete!')
     else:
-        flash('Erreur: Le Club ou la competition n a pas été trouvé')
+        flash('Error: Club or competition not found.')
     
     return render_template('welcome.html', club=club, competitions=competitions)
+
 
 
 # TODO: Add route for points display
