@@ -21,16 +21,14 @@ clubs = loadClubs()
 def index():
     return render_template('index.html')
 
-@app.route('/showSummary', methods=['POST'])
+@app.route('/showSummary', methods=['GET', 'POST'])
 def showSummary():
-    email = request.form['email']
-    club = next((club for club in clubs if club['email'] == email), None)
+    if request.method == 'POST':
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+    elif request.method == 'GET':
+        club = [club for club in clubs if club['email'] == request.args.get('email')][0]
     
-    if club:
-        return render_template('welcome.html', club=club, competitions=competitions)
-    else:
-        flash('Email non trouvé. Veuillez réessayer.')
-        return redirect(url_for('index'))
+    return render_template('welcome.html', club=club, competitions=competitions)
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
