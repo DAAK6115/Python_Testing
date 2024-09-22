@@ -53,15 +53,18 @@ def purchasePlaces():
     club = next((c for c in clubs if c['name'] == club_name), None)
 
     if competition and club:
-        if places_required > 12:
-            flash('Error: You cannot reserve more than 12 places per competition.')
+        if places_required > club['points']:
+            flash('Erreur : Vous n\'avez pas assez de points pour réserver autant de places.')
+        elif places_required > 12:
+            flash('Erreur : Vous ne pouvez pas réserver plus de 12 places par compétition.')
         elif competition['numberOfPlaces'] < places_required:
-            flash('Error: Not enough places available for this competition.')
+            flash('Erreur : Il n\'y a pas assez de places disponibles pour cette compétition.')
         else:
             competition['numberOfPlaces'] -= places_required
-            flash('Great-booking complete!')
+            club['points'] -= places_required  # Déduire les points utilisés
+            flash('Réservation complète !')
     else:
-        flash('Error: Club or competition not found.')
+        flash('Erreur : Club ou compétition non trouvé.')
     
     return render_template('welcome.html', club=club, competitions=competitions)
 
