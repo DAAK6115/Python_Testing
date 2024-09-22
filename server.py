@@ -36,11 +36,11 @@ def showSummary():
 def book(competition, club):
     foundClub = next((c for c in clubs if c['name'] == club), None)
     foundCompetition = next((c for c in competitions if c['name'] == competition), None)
-    
+
     if foundClub and foundCompetition:
         return render_template('booking.html', club=foundClub, competition=foundCompetition)
     else:
-        flash('Erreur lors de la sélection du club ou de la compétition.')
+        flash('Erreur: Club invalide ou Competition selectionnée')
         return redirect(url_for('index'))
 
 @app.route('/purchasePlaces', methods=['POST'])
