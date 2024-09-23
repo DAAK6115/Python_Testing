@@ -24,11 +24,17 @@ def index():
 @app.route('/showSummary', methods=['GET', 'POST'])
 def showSummary():
     if request.method == 'POST':
-        club = [club for club in clubs if club['email'] == request.form['email']][0]
-    elif request.method == 'GET':
-        club = [club for club in clubs if club['email'] == request.args.get('email')][0]
-    
-    return render_template('welcome.html', club=club, competitions=competitions)
+        matching_clubs = [club for club in clubs if club['email'] == request.form['email']]
+        
+        if not matching_clubs:
+            # Afficher un message d'erreur si aucun club n'est trouvé
+            flash("Email invalide, veuillez reessayer.")
+            return render_template('index.html')  # Retourner à la page d'accueil ou index.html
+        
+        club = matching_clubs[0]
+        return render_template('welcome.html', club=club, competitions=competitions)
+
+
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):

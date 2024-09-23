@@ -7,6 +7,17 @@
 <body>
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
     
+    <!-- Affichage des messages flashés en cas d'erreur -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li style="color: red;">{{ message }}</li>  <!-- Affichage en rouge des messages d'erreur -->
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
     <!-- Lien vers le tableau des points -->
     <p><a href="/points">View Club Points</a></p>
 
