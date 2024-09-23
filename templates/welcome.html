@@ -3,39 +3,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary | GUDLFT Registration</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+            font-size: 28px;
+        }
+
+        /* Stylisation du bouton "Logout" */
+        .logout {
+            display: inline-block;
+            float: right;
+            margin-right: 20px;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            background-color: #c82333;
+        }
+
+        /* Stylisation du lien "Voir les points des clubs" */
+        .view-points {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .view-points:hover {
+            background-color: #0056b3;
+        }
+
+        .flash-messages {
+            text-align: center;
+            margin: 20px auto;
+            width: 50%;
+            color: red;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .competitions {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .competitions li {
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .competitions li h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .competitions li a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .competitions li a:hover {
+            background-color: #218838;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .points-info {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+    </style>
 </head>
 <body>
-    <!-- Affichage du nom du club au lieu de l'email -->
-    <h2>Welcome, {{club['name']}} </h2><a href="{{url_for('logout')}}">Logout</a>
 
-    <!-- Ajout du lien pour voir le tableau public des points des clubs -->
-    <p><a href="{{ url_for('points_public') }}">Voir les points des clubs</a></p>
+    <!-- Affichage du nom du club et bouton de déconnexion -->
+    <h2>Welcome, {{club['name']}} </h2>
+    <a href="{{url_for('logout')}}" class="logout">Logout</a>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul>
-       {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-       </ul>
-    {% endif %}
-    
-    Points available: {{club['points']}}
-    <h3>Competitions:</h3>
-    <ul>
-        {% for comp in competitions %}
-        <li>
-            {{comp['name']}}<br />
-            Date: {{comp['date']}}<br />
-            Number of Places: {{comp['numberOfPlaces']}}
-            {% if comp['numberOfPlaces']|int > 0 %}
-            <a href="{{ url_for('book', competition=comp['name'], club=club['name']) }}">Réserver des places</a>
-            {% endif %}
-        </li>
-        <hr />
-        {% endfor %}
-    </ul>
-    {% endwith %}
+    <!-- Lien pour voir le tableau public des points -->
+    <div class="container">
+        <p><a href="{{ url_for('points_public') }}" class="view-points">Voir les points des clubs</a></p>
+
+        <!-- Messages flashés en cas d'erreur -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Affichage des points disponibles -->
+        <div class="points-info">
+            Points available: <strong>{{club['points']}}</strong>
+        </div>
+
+        <!-- Liste des compétitions -->
+        <h3>Competitions:</h3>
+        <ul class="competitions">
+            {% for comp in competitions %}
+            <li>
+                <h3>{{ comp['name'] }}</h3>
+                Date: {{ comp['date'] }}<br />
+                Number of Places: {{ comp['numberOfPlaces'] }}
+                {% if comp['numberOfPlaces']|int > 0 %}
+                <a href="{{ url_for('book', competition=comp['name'], club=club['name']) }}">Réserver des places</a>
+                {% endif %}
+            </li>
+            <hr />
+            {% endfor %}
+        </ul>
+    </div>
 
 </body>
 </html>
