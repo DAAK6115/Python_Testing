@@ -5,21 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau des Points des Clubs</title>
     <style>
-        table {
-            width: 50%;
-            margin: 0 auto;
-            border-collapse: collapse;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
         }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+
         h2 {
             text-align: center;
+            color: #333;
+            margin-top: 20px;
+            font-size: 28px;
+        }
+
+        table {
+            width: 60%;
+            margin: 40px auto;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            font-size: 16px;
+            color: #555;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Style for mobile responsiveness */
+        @media (max-width: 768px) {
+            table {
+                width: 90%;
+            }
         }
     </style>
 </head>
