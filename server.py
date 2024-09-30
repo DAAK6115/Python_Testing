@@ -1,5 +1,6 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
+from datetime import datetime  
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -27,14 +28,18 @@ def showSummary():
         matching_clubs = [club for club in clubs if club['email'] == request.form['email']]
         
         if not matching_clubs:
-            # Afficher un message d'erreur si aucun club n'est trouvé
-            flash("Email invalide, veuillez reessayer.")
-            return render_template('index.html')  # Retourner à la page d'accueil ou index.html
-        
+            flash("Email invalide, veuillez réessayer.")
+            return render_template('index.html')
+
         club = matching_clubs[0]
-        return render_template('welcome.html', club=club, competitions=competitions)
 
+        # Filtrer les compétitions futures uniquement
+        upcoming_competitions = [
+            comp for comp in competitions
+            if datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') > datetime.now()
+        ]
 
+        return render_template('welcome.html', club=club, competitions=upcoming_competitions)
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
@@ -42,13 +47,15 @@ def book(competition, club):
     foundCompetition = next((c for c in competitions if c['name'] == competition), None)
 
     if foundClub and foundCompetition:
-        return render_template('booking.html', club=foundClub, competition=foundCompetition)
+        # Vérifier si la compétition est encore à venir
+        if datetime.strptime(foundCompetition['date'], '%Y-%m-%d %H:%M:%S') > datetime.now():
+            return render_template('booking.html', club=foundClub, competition=foundCompetition)
+        else:
+            flash("Erreur : Vous ne pouvez pas réserver une compétition dont la date est passée.")
+            return redirect(url_for('showSummary'))
     else:
-        flash('Erreur: Club invalide ou Competition selectionnée')
+        flash('Erreur: Club invalide ou Competition sélectionnée')
         return redirect(url_for('index'))
-
-@app.route('/purchasePlaces', methods=['POST'])
-@app.route('/purchasePlaces', methods=['POST'])
 
 @app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
@@ -61,9 +68,14 @@ def purchasePlaces():
     club = next((c for c in clubs if c['name'] == club_name), None)
 
     if competition and club:
+        # Vérifier si la compétition est encore à venir
+        if datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S') < datetime.now():
+            flash('Erreur : Vous ne pouvez pas réserver des places pour une compétition passée.')
+            return redirect(url_for('showSummary'))
+        
         # Conversion des points et des places disponibles en entiers
         club_points = int(club['points'])
-        competition_places = int(competition['numberOfPlaces'])  # Convertir en entier
+        competition_places = int(competition['numberOfPlaces'])
 
         # Vérifications des points et des places disponibles
         if places_required > club_points:
@@ -74,8 +86,8 @@ def purchasePlaces():
             flash('Erreur : Il n\'y a pas assez de places disponibles pour cette compétition.')
         else:
             # Mise à jour des places disponibles et des points du club
-            competition['numberOfPlaces'] = str(competition_places - places_required)  # Mise à jour des places
-            club['points'] = str(club_points - places_required)  # Mise à jour des points du club
+            competition['numberOfPlaces'] = str(competition_places - places_required)
+            club['points'] = str(club_points - places_required)
             flash('Réservation complète !')
     else:
         flash('Erreur : Club ou compétition non trouvé.')
@@ -86,14 +98,9 @@ def purchasePlaces():
 def show_points():
     return render_template('points.html', clubs=clubs)
 
-
 @app.route('/points-public')
 def points_public():
-    # Nous passons la liste des clubs à la page HTML
     return render_template('points_public.html', clubs=clubs)
-
-
-# TODO: Add route for points display
 
 @app.route('/logout')
 def logout():
