@@ -61,10 +61,16 @@ def book(competition, club):
 def purchasePlaces():
     competition_name = request.form['competition']
     club_name = request.form['club']
+    
     try:
         places_required = int(request.form['places'])  # Tentative de conversion en entier
     except ValueError:
         flash('Erreur : Le nombre de places doit être un entier valide.')
+        return redirect(url_for('showSummary'))
+
+    # Vérifier que le nombre de places est positif
+    if places_required <= 0:
+        flash('Erreur : Le nombre de places doit être supérieur à zéro.')
         return redirect(url_for('showSummary'))
 
     # Chargement des compétitions et clubs
@@ -97,6 +103,7 @@ def purchasePlaces():
         flash('Erreur : Club ou compétition non trouvé.')
 
     return render_template('welcome.html', club=club, competitions=competitions)
+
 
 @app.route('/points')
 def show_points():
