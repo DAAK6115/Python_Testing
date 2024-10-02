@@ -80,6 +80,18 @@
             <button type="submit">Réserver</button>
         </form>
     </div>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let placesInput = document.getElementById('places');
+            let placesValue = placesInput.value;
+
+            // Validation to ensure the input is a number
+            if (!/^\d+$/.test(placesValue)) {  // Check if the value is an integer
+                event.preventDefault();  // Prevent form submission
+                alert('Veuillez entrer un nombre valide pour les places.');
+            }
+        });
+    </script>
 
 </body>
 </html>
