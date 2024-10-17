@@ -18,7 +18,6 @@
             font-size: 28px;
         }
 
-        /* Stylisation du bouton "Logout" */
         .logout {
             display: inline-block;
             float: right;
@@ -38,7 +37,6 @@
             background-color: #c82333;
         }
 
-        /* Stylisation du lien "Voir les points des clubs" */
         .view-points {
             display: inline-block;
             margin: 20px 0;
@@ -113,20 +111,16 @@
             margin-top: 20px;
             color: #333;
         }
-
     </style>
 </head>
 <body>
 
-    <!-- Affichage du nom du club et bouton de déconnexion -->
-    <h2>Welcome, {{club['name']}} </h2>
-    <a href="{{url_for('logout')}}" class="logout">Logout</a>
+    <h2>Welcome, {{ club['name'] }}</h2>
+    <a href="{{ url_for('logout') }}" class="logout">Logout</a>
 
-    <!-- Lien pour voir le tableau public des points -->
     <div class="container">
         <p><a href="{{ url_for('points_public') }}" class="view-points">Voir les points des clubs</a></p>
 
-        <!-- Messages flashés en cas d'erreur -->
         <div class="flash-messages">
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -139,12 +133,10 @@
             {% endwith %}
         </div>
 
-        <!-- Affichage des points disponibles -->
         <div class="points-info">
-            Points available: <strong>{{club['points']}}</strong>
+            Points available: <strong>{{ club['points'] }}</strong>
         </div>
 
-        <!-- Liste des compétitions -->
         <h3>Competitions:</h3>
         <ul class="competitions">
             {% for comp in competitions %}
