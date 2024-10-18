@@ -1,7 +1,8 @@
-bin
-include
-lib
-.Python
-tests/
-.envrc
-__pycache__
+# Supprimez ou commentez les lignes suivantes si vous voulez suivre ces dossiers
+# bin
+# include
+# lib
+# .Python
+# tests/
+# .envrc
+# __pycache__
