@@ -48,10 +48,6 @@ def showSummary():
         club = matching_clubs[0]
 
         # Filtrer les compétitions futures uniquement
-        if not competitions:
-            flash("Aucune compétition disponible pour le moment.")
-            return redirect(url_for('index'))
-
         upcoming_competitions = [
             comp for comp in competitions
             if datetime.strptime(comp['date'], '%Y-%m-%d %H:%M:%S') > datetime.now()
@@ -94,28 +90,29 @@ def purchasePlaces():
 
         if not competition_name or not club_name or not places_required:
             flash("Les informations de réservation sont incomplètes.")
-            return redirect(url_for('showSummary'))
+            return redirect(url_for('showSummary', email=club_name))
 
         try:
             places_required = int(places_required)  # Tentative de conversion en entier
         except ValueError:
             flash('Erreur : Le nombre de places doit être un entier valide.')
-            return redirect(url_for('showSummary'))
+            return redirect(url_for('showSummary', email=club_name))
 
         if places_required <= 0:
             flash('Erreur : Le nombre de places doit être supérieur à zéro.')
-            return redirect(url_for('showSummary'))
+            return redirect(url_for('showSummary', email=club_name))
 
         competition = next((comp for comp in competitions if comp['name'] == competition_name), None)
         club = next((c for c in clubs if c['name'] == club_name), None)
 
         if not competition or not club:
             flash('Erreur : Club ou compétition non trouvé.')
-            return redirect(url_for('showSummary'))
+            return redirect(url_for('showSummary', email=club_name))
 
+        # Vérifier si la compétition est passée
         if datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S') < datetime.now():
             flash('Erreur : Vous ne pouvez pas réserver des places pour une compétition passée.')
-            return redirect(url_for('showSummary'))
+            return redirect(url_for('showSummary', email=club_name))
 
         club_points = int(club['points'])
         competition_places = int(competition['numberOfPlaces'])
@@ -155,11 +152,10 @@ def points_public():
 def logout():
     return redirect(url_for('index'))
 
-# server.py
+# Fonction de validation du nombre de places
 def validate_places(places):
     """Fonction de validation du nombre de places"""
     if not isinstance(places, int):
         raise ValueError("Le nombre de places doit être un entier.")
     if places <= 0:
         raise ValueError("Le nombre de places doit être supérieur à zéro.")
-
