@@ -1,7 +1,9 @@
-bin
-include
-lib
+# Ignorer les dossiers d'environnement virtuel et les fichiers non nécessaires
+bin/
+include/
+lib/
 .Python
-tests/
+venv/
+__pycache__/
 .envrc
-__pycache__
+*.pyc

@@ -1,21 +1,37 @@
+"""Test d'intégration pour la vérification du processus de réservation.
+
+Ce module contient un test pour vérifier que l'interaction entre
+l'affichage des compétitions et la réservation de places fonctionne
+correctement.
+"""
+
 import pytest
-from server import competitions, clubs
-from tests.config import client
-
-def test_purchase_places():
-    """Test de la réservation de places"""
-    club = [c for c in clubs if c['name'] == 'Simply Lift'][0]
-    competition = [c for c in competitions if c['name'] == 'Spring Festival'][0]
-    initial_points = int(club['points'])
-    initial_places = int(competition['numberOfPlaces'])
-    places_to_book = 3
-
-    # Simuler la réservation
-    competition['numberOfPlaces'] = str(initial_places - places_to_book)
-    club['points'] = str(initial_points - places_to_book)
-
-    # Vérifier les changements
-    assert int(competition['numberOfPlaces']) == initial_places - places_to_book
-    assert int(club['points']) == initial_points - places_to_book
+from bs4 import BeautifulSoup
 
 
+def test_integration_reservation_workflow(client):
+    """Vérifie le workflow de réservation d'une place."""
+    competition_name = "Fall Classic"  # Utilisez le nom d'une compétition existante
+    club_name = "Simply Lift"  # Utilisez le nom d'un club existant
+
+    # Créez l'URL à partir du nom de la compétition et du club
+    url = f"/book/{competition_name}/{club_name}"
+    rv = client.get(url)
+
+    # Vérifiez si le code de statut est 200 et la page est rendue correctement
+    assert rv.status_code == 200
+
+    # Analysez le contenu HTML
+    soup = BeautifulSoup(rv.data, "html.parser")
+
+    # Vérifiez si le titre de la compétition est présent
+    assert soup.find("h2", string=competition_name) is not None
+
+    # Vérifiez si le texte "Places available" est présent
+    assert (
+        soup.find("div", class_="info", string=lambda t: "Places available" in t)
+        is not None
+    )
+
+    # Vérifiez si le bouton "Réserver" est présent
+    assert soup.find("button", string="Réserver") is not None

@@ -1,8 +1,20 @@
-import pytest
-from tests.config import client  # Import explicite depuis config.py
+"""Test d'intégration pour vérifier la connexion avec un email valide.
 
-def test_show_summary(client):
-    """Test que la route showSummary fonctionne avec un email valide"""
-    rv = client.post('/showSummary', data=dict(email="john@simplylift.co"))
+Ce module s'assure que la connexion avec un email valide fonctionne
+correctement.
+"""
+
+import pytest
+
+from server import app
+
+
+def test_valid_email_login(client):
+    """Test de la connexion avec un email valide.
+
+    Args:
+        client: Le client de test pour l'application Flask.
+    """
+    rv = client.post("/showSummary", data={"email": "john@simplylift.co"})
     assert rv.status_code == 200
-    assert "Welcome, Simply Lift" in rv.data.decode('utf-8')
+    assert b"Welcome, Simply Lift" in rv.data
